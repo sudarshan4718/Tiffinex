@@ -4,6 +4,7 @@ import 'dotenv/config';
 import cookieParser from "cookie-parser";
 import connectDB from "./config/mongodb.js";
 import userRouter from "./routes/userRoutes.js";
+import providerRouter from "./routes/providerRoutes.js";
 
 
 
@@ -22,6 +23,7 @@ app.get("/", (req, res) => {
 });
 
 app.use('/api/user',userRouter)
+app.use('/api/provider', providerRouter);
 
 app.listen(port, ()=> {
     console.log(`Server started on port : ${port}`);

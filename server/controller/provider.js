@@ -3,6 +3,8 @@ import addressModel from "../models/address.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import transporter from "../config/nodemailer.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import userModel from "../models/user.js";
 
 // Register Provider
 export const registerProvider = async (req, res) => {
@@ -10,12 +12,19 @@ export const registerProvider = async (req, res) => {
         const { name,tiffinName, email, password, phoneNumber } = req.body;
         const { addressLine1, name_add, locality, addressType, pinCode, landmark } = req.body;
 
-        if (!name || !email || !password || !phoneNumber) {
+        if (!name ||!tiffinName || !email || !password || !phoneNumber) {
             return res.status(400).json({ success: false, message: "Provider details missing" });
         }
 
         if (!addressLine1 || !name_add || !locality || !addressType || !pinCode || !landmark || !addressType.match(/^(WORK|HOME)$/)) {
             return res.status(400).json({ success: false, message: "Address details missing" });
+        }
+        
+        let providerLogoUrl = "";
+        if(req.file?.path)
+        {
+           const cloudResult = await uploadOnCloudinary(req.file.path);
+           providerLogoUrl = cloudResult?.secure_url || "";
         }
 
         const providerExists = await providerModel.findOne({ email });
@@ -32,8 +41,10 @@ export const registerProvider = async (req, res) => {
 
         const newProvider = new providerModel({
             name,
+            tiffinName,
             email,
             password: hashedPassword,
+            providerLogo: providerLogoUrl,
             phoneNumber,
         });
 

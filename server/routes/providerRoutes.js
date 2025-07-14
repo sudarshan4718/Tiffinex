@@ -1,27 +1,29 @@
 import express from 'express';
-import { 
-    registerUser, 
-    loginUser, 
-    logoutUser, 
-    sendVerifyOtpUser, 
-    verifyEmailUser, 
-    isAuthenticatedUser, 
-    sendResetOtpUser, 
-    resetPasswordUser, 
-    addressChangeUser
-} from '../controller/user.js';
-import { userMiddleware } from '../middleware/user.js';
+import {
+    registerProvider,
+    loginProvider,
+    logoutProvider,
+    sendVerifyOtpProvider,
+    verifyEmailProvider,
+    sendResetOtpProvider,
+    resetPasswordProvider,
+    addressChangeProvider,
+    isAuthenticatedProvider
+} from '../controller/provider.js';
 
-const userRouter = express.Router();
+import { providerMiddleware } from '../middleware/provider.js';
+import { upload } from '../middleware/multer.middleware.js';
 
-userRouter.post('/register', registerUser);
-userRouter.post('/login', loginUser);
-userRouter.get('/logout', logoutUser);
-userRouter.post('/send-verify-otp',userMiddleware, sendVerifyOtpUser);
-userRouter.post('/verify-email', userMiddleware,verifyEmailUser);
-userRouter.get('/is-authenticated',userMiddleware, isAuthenticatedUser);
-userRouter.post('/send-reset-otp',userMiddleware, sendResetOtpUser);
-userRouter.post('/reset-password',userMiddleware, resetPasswordUser);
-userRouter.post('/address-change',userMiddleware,addressChangeUser);
+const providerRouter = express.Router();
 
-export default userRouter;
+providerRouter.post('/register',upload.single("providerLogo"), registerProvider);
+providerRouter.post('/login', loginProvider);
+providerRouter.get('/logout', logoutProvider);
+providerRouter.post('/send-verify-otp', providerMiddleware, sendVerifyOtpProvider);
+providerRouter.post('/verify-email', providerMiddleware, verifyEmailProvider);
+providerRouter.get('/is-authenticated', providerMiddleware, isAuthenticatedProvider);
+providerRouter.post('/send-reset-otp', providerMiddleware, sendResetOtpProvider);
+providerRouter.post('/reset-password', providerMiddleware, resetPasswordProvider);
+providerRouter.post('/address-change', providerMiddleware, addressChangeProvider);
+
+export default providerRouter;

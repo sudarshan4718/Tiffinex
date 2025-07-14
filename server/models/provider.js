@@ -20,7 +20,7 @@ const providerSchema = new mongoose.Schema({
     },
     phoneNumber : {
         required: true,
-        type: Number,
+        type: String,
         min:10,
         max:10
     },
